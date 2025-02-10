@@ -5,21 +5,9 @@ import matplotlib.ticker as ticker
 import matplotlib.ticker as mticker
 import platform
 
-import os
-
 # **診断ボタンの状態を管理**
 if "run_simulation" not in st.session_state:
     st.session_state.run_simulation = False
-
-# **フォントのパスを直接指定**
-font_path = "/usr/share/fonts/opentype/noto/NotoSansCJK-Regular.ttc"
-
-# **matplotlib に適用**
-font_prop = fm.FontProperties(fname=font_path)
-plt.rcParams["font.family"] = font_prop.get_name()
-
-# **現在の設定を確認**
-print(f"✅ 設定されたフォント: {plt.rcParams['font.family']}")
 
 # **タイトル**
 st.markdown("## 中古マンションの財政状態を簡単診断！<br>修繕積立金シミュレーション", unsafe_allow_html=True)
@@ -185,7 +173,3 @@ if st.session_state.run_simulation:
     # **Streamlit にグラフを表示**
     st.pyplot(fig)
     
-    if os.path.exists(font_path):
-        print(f"✅ フォントは存在します: {font_path}")
-    else:
-        print(f"❌ フォントが見つかりません: {font_path}")
