@@ -5,15 +5,6 @@ import matplotlib.ticker as ticker
 import matplotlib.ticker as mticker
 import platform
 
-st.markdown("""
-    <style>
-    @import url('https://fonts.googleapis.com/css2?family=Noto+Sans+JP&display=swap');
-    html, body, [class*="css"] {
-        font-family: 'Noto Sans JP', sans-serif;
-    }
-    </style>
-""", unsafe_allow_html=True)
-
 # **フォントのパスを直接指定**
 font_path = "/usr/share/fonts/opentype/noto/NotoSansCJK-Regular.ttc"
 
