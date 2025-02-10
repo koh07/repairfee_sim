@@ -1,9 +1,36 @@
 import streamlit as st
+import matplotlib.pyplot as plt
+import matplotlib.font_manager as fm
+import matplotlib.ticker as ticker
+import matplotlib.ticker as mticker
 import platform
 
 # **診断ボタンの状態を管理**
 if "run_simulation" not in st.session_state:
     st.session_state.run_simulation = False
+
+# **環境ごとに使用するフォントを決定**
+def get_best_japanese_font():
+    system = platform.system()
+    font_candidates = []
+
+    if system == "Windows":
+        font_candidates = ["Yu Gothic", "MS Gothic"]
+    elif system == "Darwin":  # macOS
+        font_candidates = ["Hiragino Sans", "Hiragino Kaku Gothic Pro"]
+    else:  # Linux
+        font_candidates = ["Noto Sans CJK JP", "IPAexGothic"]
+
+    # システムに存在するフォントを検索
+    available_fonts = set(fm.findSystemFonts(fontpaths=None, fontext='ttf'))
+    for font in font_candidates:
+        font_path = fm.findfont(fm.FontProperties(family=font), fallback_to_default=False)
+        if font_path in available_fonts:
+            return font
+
+    # フォントが見つからない場合は警告を表示
+    st.warning("⚠️ 日本語フォントが見つかりませんでした。デフォルトのフォントを使用します。")
+    return None
 
 # **タイトル**
 st.markdown("## 中古マンションの財政状態を簡単診断！<br>修繕積立金シミュレーション", unsafe_allow_html=True)
@@ -92,7 +119,15 @@ if st.session_state.run_simulation:
     balance = current_balance
     insufficient_year = None
 
+    # **グラフ用データ**
+    years = []
+    balances = []
+    increased_balances = None
+
     for year in range(2024, future_year + 1):
+        years.append(year)
+        balances.append(balance)
+        
         balance += annual_contribution
         balance -= annual_equipment_repair_cost  
 
@@ -111,7 +146,7 @@ if st.session_state.run_simulation:
     st.write(f"【{future_year}年時点の積立残高】 {balance:,.0f} 円")
 
     if balance >= 0:
-        st.success(f"{future_year}年時点で財政状態は適正です。")
+        st.success(f"{future_year}年時点で残高はプラスです。")
     else:
         st.error(f"{future_year}年時点で不足が発生します。")
         if insufficient_year:
@@ -122,3 +157,46 @@ if st.session_state.run_simulation:
         remaining_years = future_year - 2024
         required_increase = missing_amount / (remaining_years * 12 * total_units)
         st.warning(f"💰 毎月の積立金を **{required_increase:,.0f} 円** 増額すると不足を回避できます。")
+        
+        # **増額後のシミュレーション**
+        increased_balance = current_balance
+        increased_balances = []
+
+        for year in years:
+            increased_balances.append(increased_balance)
+            increased_balance += (annual_contribution + (required_increase * total_units * 12))
+            increased_balance -= annual_equipment_repair_cost
+            # **大規模修繕の費用を差し引く**
+            for repair in st.session_state.repairs:
+                if repair["year"] == year:
+                    repair_cost = validate_number(repair["cost"], f"{repair['year']}年の修繕費")
+                    if repair_cost is not None:
+                        increased_balance -= repair_cost
+
+    # **適切なフォントを設定**
+    best_font = get_best_japanese_font()
+    if best_font:
+        plt.rcParams['font.family'] = best_font
+    
+    # **グラフの作成**
+    fig, ax = plt.subplots()
+    ax.plot(years, balances, marker="o", linestyle="-", color="b", label="積立金残高")
+
+    # **残高不足時のみ増額後の積立金をプロット**
+    if increased_balances:
+        ax.plot(years, increased_balances, marker="o", linestyle="--", color="orange", label="増額後の積立金残高")
+
+    ax.set_title("積立金の推移シミュレーション")
+    ax.legend()
+    ax.grid()
+
+    # **X軸のラベルを整数（西暦）にする**
+    ax.set_xlabel("年")
+    ax.xaxis.set_major_locator(mticker.MaxNLocator(integer=True))
+    
+    # **Y軸の単位を「円」にする**
+    ax.set_ylabel("積立金残高（円）")
+    ax.yaxis.set_major_formatter(mticker.FuncFormatter(lambda x, pos: f"{int(x):,} 円"))
+
+    # **Streamlit にグラフを表示**
+    st.pyplot(fig)
