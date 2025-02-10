@@ -5,6 +5,10 @@ import matplotlib.ticker as ticker
 import matplotlib.ticker as mticker
 import platform
 
+# **診断ボタンの状態を管理**
+if "run_simulation" not in st.session_state:
+    st.session_state.run_simulation = False
+
 # **フォントのパスを直接指定**
 font_path = "/usr/share/fonts/opentype/noto/NotoSansCJK-Regular.ttc"
 
