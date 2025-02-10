@@ -28,8 +28,20 @@ st.markdown("""
 if "run_simulation" not in st.session_state:
     st.session_state.run_simulation = False
 
+# **タイトルと基本設定**
+st.set_page_config(
+    page_title="中古マンションの財政状況を簡単診断！修繕積立金シミュレーション",
+    page_icon="🏢",  # 絵文字やアイコンを指定可能
+    layout="wide"
+)
+
+# **meta description を設定**
+st.markdown("""
+    <meta name="description" content="マンションの修繕積立金の健全性を簡単に診断し、将来の財政状況をシミュレーションできます。">
+""", unsafe_allow_html=True)
+
 # **タイトル**
-st.markdown("## 中古マンションの財政状態を簡単診断！<br>修繕積立金シミュレーション", unsafe_allow_html=True)
+st.markdown("## 中古マンションの財政状況を簡単診断！<br>修繕積立金シミュレーション", unsafe_allow_html=True)
 
 # **ユーザー入力（基本情報）**
 total_units = st.number_input("総戸数", min_value=1, value=39)
