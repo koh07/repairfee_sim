@@ -5,38 +5,14 @@ import matplotlib.ticker as ticker
 import matplotlib.ticker as mticker
 import platform
 
-import os
-# Run `fc-list` command and display the output in Streamlit
-output = os.popen("fc-list | grep 'Noto'").read()
-
-if output:
-    st.text("✅ Installed Fonts:")
-    st.text(output)
-else:
-    st.text("❌ No Noto fonts found. Check installation.")
-    
-
-# **診断ボタンの状態を管理**
-if "run_simulation" not in st.session_state:
-    st.session_state.run_simulation = False
-
-
-# **使用可能な日本語フォントを探して設定**
-def get_best_japanese_font():
-    font_candidates = [
-        "/usr/share/fonts/opentype/noto/NotoSansCJK-Regular.ttc",  # Ubuntu の標準パス
-        "/usr/share/fonts/truetype/noto/NotoSansCJK-Regular.ttc",
-        "/usr/share/fonts/truetype/noto/NotoSansJP-Regular.otf"
-    ]
-    
-    for font_path in font_candidates:
-        try:
-            font_prop = fm.FontProperties(fname=font_path)
-            return font_prop
-        except Exception:
-            continue
-    
-    return None  # フォントが見つからなければ None を返す
+st.markdown("""
+    <style>
+    @import url('https://fonts.googleapis.com/css2?family=Noto+Sans+JP&display=swap');
+    html, body, [class*="css"] {
+        font-family: 'Noto Sans JP', sans-serif;
+    }
+    </style>
+""", unsafe_allow_html=True)
 
 # **タイトル**
 st.markdown("## 中古マンションの財政状態を簡単診断！<br>修繕積立金シミュレーション", unsafe_allow_html=True)
@@ -180,11 +156,12 @@ if st.session_state.run_simulation:
                         increased_balance -= repair_cost
 
     # **フォントを `matplotlib` に設定**
-    best_font = get_best_japanese_font()
-    if best_font:
-        plt.rcParams["font.family"] = best_font.get_name()
-    else:
-        print("⚠️ 日本語フォントが見つかりませんでした。")
+    # **正しいフォントパスを設定**
+    font_path = "/usr/share/fonts/opentype/noto/NotoSansCJK-Regular.ttc"
+    font_prop = fm.FontProperties(fname=font_path)
+
+    # **matplotlib に適用**
+    plt.rcParams["font.family"] = font_prop.get_name()
 
     # **グラフの作成**
     fig, ax = plt.subplots()
