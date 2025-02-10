@@ -14,6 +14,16 @@ st.markdown("""
     </style>
 """, unsafe_allow_html=True)
 
+# **フォントのパスを直接指定**
+font_path = "/usr/share/fonts/opentype/noto/NotoSansCJK-Regular.ttc"
+
+# **matplotlib に適用**
+font_prop = fm.FontProperties(fname=font_path)
+plt.rcParams["font.family"] = font_prop.get_name()
+
+# **現在の設定を確認**
+print(f"✅ 設定されたフォント: {plt.rcParams['font.family']}")
+
 # **タイトル**
 st.markdown("## 中古マンションの財政状態を簡単診断！<br>修繕積立金シミュレーション", unsafe_allow_html=True)
 
@@ -154,14 +164,6 @@ if st.session_state.run_simulation:
                     repair_cost = validate_number(repair["cost"], f"{repair['year']}年の修繕費")
                     if repair_cost is not None:
                         increased_balance -= repair_cost
-
-    # **フォントを `matplotlib` に設定**
-    # **正しいフォントパスを設定**
-    font_path = "/usr/share/fonts/opentype/noto/NotoSansCJK-Regular.ttc"
-    font_prop = fm.FontProperties(fname=font_path)
-
-    # **matplotlib に適用**
-    plt.rcParams["font.family"] = font_prop.get_name()
 
     # **グラフの作成**
     fig, ax = plt.subplots()
