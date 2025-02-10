@@ -9,28 +9,23 @@ import platform
 if "run_simulation" not in st.session_state:
     st.session_state.run_simulation = False
 
-# **環境ごとに使用するフォントを決定**
+
+# **使用可能な日本語フォントを探して設定**
 def get_best_japanese_font():
-    system = platform.system()
-    font_candidates = []
-
-    if system == "Windows":
-        font_candidates = ["Yu Gothic", "MS Gothic"]
-    elif system == "Darwin":  # macOS
-        font_candidates = ["Hiragino Sans", "Hiragino Kaku Gothic Pro"]
-    else:  # Linux
-        font_candidates = ["Noto Sans CJK JP", "IPAexGothic"]
-
-    # システムに存在するフォントを検索
-    available_fonts = set(fm.findSystemFonts(fontpaths=None, fontext='ttf'))
-    for font in font_candidates:
-        font_path = fm.findfont(fm.FontProperties(family=font), fallback_to_default=False)
-        if font_path in available_fonts:
-            return font
-
-    # フォントが見つからない場合は警告を表示
-    st.warning("⚠️ 日本語フォントが見つかりませんでした。デフォルトのフォントを使用します。")
-    return None
+    font_candidates = [
+        "/usr/share/fonts/opentype/noto/NotoSansCJK-Regular.ttc",  # Ubuntu の標準パス
+        "/usr/share/fonts/truetype/noto/NotoSansCJK-Regular.ttc",
+        "/usr/share/fonts/truetype/noto/NotoSansJP-Regular.otf"
+    ]
+    
+    for font_path in font_candidates:
+        try:
+            font_prop = fm.FontProperties(fname=font_path)
+            return font_prop
+        except Exception:
+            continue
+    
+    return None  # フォントが見つからなければ None を返す
 
 # **タイトル**
 st.markdown("## 中古マンションの財政状態を簡単診断！<br>修繕積立金シミュレーション", unsafe_allow_html=True)
@@ -172,10 +167,13 @@ if st.session_state.run_simulation:
                     repair_cost = validate_number(repair["cost"], f"{repair['year']}年の修繕費")
                     if repair_cost is not None:
                         increased_balance -= repair_cost
-    # **適切なフォントを設定**
+
+    # **フォントを `matplotlib` に設定**
     best_font = get_best_japanese_font()
     if best_font:
-        plt.rcParams['font.family'] = best_font
+        plt.rcParams["font.family"] = best_font.get_name()
+    else:
+        print("⚠️ 日本語フォントが見つかりませんでした。")
 
     # **グラフの作成**
     fig, ax = plt.subplots()
