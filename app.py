@@ -5,6 +5,13 @@ import matplotlib.ticker as ticker
 import matplotlib.ticker as mticker
 import platform
 
+# **タイトルと基本設定**
+st.set_page_config(
+    page_title="中古マンションの財政状況を簡単診断！修繕積立金シミュレーション",
+    page_icon="🏢",  # 絵文字やアイコンを指定可能
+    layout="wide"
+)
+
 # **フォントのパスを確認**
 font_path = "/usr/share/fonts/opentype/noto/NotoSansCJK-Regular.ttc"
 
@@ -15,6 +22,15 @@ fm.fontManager.addfont(font_path)  # フォントを `matplotlib` に追加
 # **matplotlib にフォントを適用**
 plt.rcParams["font.family"] = font_prop.get_name()
 
+# **診断ボタンの状態を管理**
+if "run_simulation" not in st.session_state:
+    st.session_state.run_simulation = False
+
+# **meta description を設定**
+st.markdown("""
+    <meta name="description" content="マンションの修繕積立金の健全性を簡単に診断し、将来の財政状況をシミュレーションできます。">
+""", unsafe_allow_html=True)
+
 st.markdown("""
     <style>
     @import url('https://fonts.googleapis.com/css2?family=Noto+Sans+JP&display=swap');
@@ -24,21 +40,6 @@ st.markdown("""
     </style>
 """, unsafe_allow_html=True)
 
-# **診断ボタンの状態を管理**
-if "run_simulation" not in st.session_state:
-    st.session_state.run_simulation = False
-
-# **タイトルと基本設定**
-st.set_page_config(
-    page_title="中古マンションの財政状況を簡単診断！修繕積立金シミュレーション",
-    page_icon="🏢",  # 絵文字やアイコンを指定可能
-    layout="wide"
-)
-
-# **meta description を設定**
-st.markdown("""
-    <meta name="description" content="マンションの修繕積立金の健全性を簡単に診断し、将来の財政状況をシミュレーションできます。">
-""", unsafe_allow_html=True)
 
 # **タイトル**
 st.markdown("## 中古マンションの財政状況を簡単診断！<br>修繕積立金シミュレーション", unsafe_allow_html=True)
