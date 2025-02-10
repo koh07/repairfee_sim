@@ -5,6 +5,17 @@ import matplotlib.ticker as ticker
 import matplotlib.ticker as mticker
 import platform
 
+import os
+# Run `fc-list` command and display the output in Streamlit
+output = os.popen("fc-list | grep 'Noto'").read()
+
+if output:
+    st.text("✅ Installed Fonts:")
+    st.text(output)
+else:
+    st.text("❌ No Noto fonts found. Check installation.")
+    
+
 # **診断ボタンの状態を管理**
 if "run_simulation" not in st.session_state:
     st.session_state.run_simulation = False
