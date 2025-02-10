@@ -5,6 +5,8 @@ import matplotlib.ticker as ticker
 import matplotlib.ticker as mticker
 import platform
 
+import os
+
 # **フォントのパスを確認**
 font_path = "/usr/share/fonts/opentype/noto/NotoSansCJK-Regular.ttc"
 
