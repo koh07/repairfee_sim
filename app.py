@@ -172,12 +172,11 @@ if st.session_state.run_simulation:
                     repair_cost = validate_number(repair["cost"], f"{repair['year']}年の修繕費")
                     if repair_cost is not None:
                         increased_balance -= repair_cost
-
     # **適切なフォントを設定**
     best_font = get_best_japanese_font()
     if best_font:
         plt.rcParams['font.family'] = best_font
-    
+
     # **グラフの作成**
     fig, ax = plt.subplots()
     ax.plot(years, balances, marker="o", linestyle="-", color="b", label="積立金残高")
