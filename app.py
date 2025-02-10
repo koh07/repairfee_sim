@@ -7,14 +7,6 @@ import platform
 
 import os
 
-font_path = "/usr/share/fonts/opentype/noto/NotoSansCJK-Regular.ttc"
-
-if os.path.exists(font_path):
-    print(f"✅ フォントは存在します: {font_path}")
-else:
-    print(f"❌ フォントが見つかりません: {font_path}")
-
-
 # **診断ボタンの状態を管理**
 if "run_simulation" not in st.session_state:
     st.session_state.run_simulation = False
@@ -192,3 +184,8 @@ if st.session_state.run_simulation:
 
     # **Streamlit にグラフを表示**
     st.pyplot(fig)
+    
+    if os.path.exists(font_path):
+        print(f"✅ フォントは存在します: {font_path}")
+    else:
+        print(f"❌ フォントが見つかりません: {font_path}")
