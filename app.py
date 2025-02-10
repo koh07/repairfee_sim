@@ -5,7 +5,7 @@ import matplotlib.ticker as ticker
 import matplotlib.ticker as mticker
 import platform
 
-matplotlib.font_manager._rebuild()
+fm._rebuild()
 
 # **診断ボタンの状態を管理**
 if "run_simulation" not in st.session_state:
