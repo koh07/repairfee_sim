@@ -5,15 +5,8 @@ import matplotlib.ticker as ticker
 import matplotlib.ticker as mticker
 import platform
 
-import os
-
 # **フォントのパスを確認**
 font_path = "/usr/share/fonts/opentype/noto/NotoSansCJK-Regular.ttc"
-
-if os.path.exists(font_path):
-    print("✅ フォントが見つかりました。")
-else:
-    print("❌ フォントが見つかりません。")
 
 # **手動でフォントを登録**
 font_prop = fm.FontProperties(fname=font_path)
@@ -22,8 +15,14 @@ fm.fontManager.addfont(font_path)  # フォントを `matplotlib` に追加
 # **matplotlib にフォントを適用**
 plt.rcParams["font.family"] = font_prop.get_name()
 
-print(f"✅ `matplotlib` に設定されたフォント: {plt.rcParams['font.family']}")
-
+st.markdown("""
+    <style>
+    @import url('https://fonts.googleapis.com/css2?family=Noto+Sans+JP&display=swap');
+    html, body, [class*="css"] {
+        font-family: 'Noto Sans JP', sans-serif;
+    }
+    </style>
+""", unsafe_allow_html=True)
 
 # **診断ボタンの状態を管理**
 if "run_simulation" not in st.session_state:
